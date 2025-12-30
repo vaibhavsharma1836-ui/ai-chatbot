@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart AI Chatbot</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            width: 380px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        #chat {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user {
+            color: #0066ff;
+            margin: 6px 0;
+        }
+
+        .bot {
+            color: #009933;
+            margin: 6px 0;
+        }
+
+        input {
+            width: 75%;
+            padding: 8px;
+        }
+
+        button {
+            width: 20%;
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h3>Smart AI 🤖</h3>
+    <div id="chat"></div>
+
+    <input id="input" placeholder="Ask me anything..." />
+    <button onclick="chat()">Send</button>
+</div>
+
+<script>
+function chat() {
+    let input = document.getElementById("input");
+    let chatBox = document.getElementById("chat");
+    let text = input.value.trim();
+
+    if (text === "") return;
+
+    chatBox.innerHTML += "<div class='user'><b>You:</b> " + text + "</div>";
+
+    let reply = getReply(text.toLowerCase());
+
+    setTimeout(() => {
+        chatBox.innerHTML += "<div class='bot'><b>AI:</b> " + reply + "</div>";
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 600);
+
+    input.value = "";
+}
+
+function getReply(msg) {
+
+    // greetings
+    if (msg.includes("hello") || msg.includes("hi")) {
+        return random([
+            "Hello! 😊",
+            "Hi there! How can I help?",
+            "Hey! Ask me something."
+        ]);
+    }
+
+    // name
+    if (msg.includes("your name")) {
+        return "I am a Smart HTML AI Chatbot.";
+    }
+
+    // time
+    if (msg.includes("time")) {
+        return "Current time is " + new Date().toLocaleTimeString();
+    }
+
+    // date
+    if (msg.includes("date")) {
+        return "Today's date is " + new Date().toDateString();
+    }
+
+    // math
+    if (msg.match(/[0-9]+\s*[\+\-\*\/]\s*[0-9]+/)) {
+        try {
+            return "Answer: " + eval(msg);
+        } catch {
+            return "I couldn't calculate that.";
+        }
+    }
+
+    // study
+    if (msg.includes("html")) {
+        return "HTML is used to create the structure of websites.";
+    }
+
+    if (msg.includes("css")) {
+        return "CSS is used for styling websites.";
+    }
+
+    if (msg.includes("javascript")) {
+        return "JavaScript makes websites interactive.";
+    }
+
+    if (msg.includes("help")) {
+        return "I can answer math, time, date, and basic study questions.";
+    }
+
+    if (msg.includes("bye")) {
+        return "Goodbye 👋 Come back soon!";
+    }
+
+    return random([
+        "Interesting question 🤔",
+        "I am still learning.",
+        "Can you rephrase that?",
+        "Tell me more!",
+        "I'm not sure, but I'm improving every day."
+    ]);
+}
+
+function random(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+</script>
+
+</body>
+</html>

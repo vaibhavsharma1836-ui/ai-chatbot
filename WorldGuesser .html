@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World Guesser Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .clue {
+            font-size: 18px;
+            margin: 15px 0;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #00ffcc;
+            color: #000;
+        }
+
+        button:hover {
+            background: #00ddb3;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-box">
+    <h1>🌍 World Guesser</h1>
+    <p class="clue" id="clue"></p>
+
+    <input type="text" id="guessInput" placeholder="Type your guess here">
+    <br>
+    <button onclick="checkGuess()">Guess</button>
+    <button onclick="newGame()">New Country</button>
+
+    <p class="message" id="message"></p>
+</div>
+
+<script>
+    const countries = [
+        {
+            name: "France",
+            clue: "This country is famous for the Eiffel Tower and baguettes."
+        },
+        {
+            name: "Japan",
+            clue: "This island nation is known for sushi and anime."
+        },
+        {
+            name: "Brazil",
+            clue: "This country has the Amazon rainforest and loves football."
+        },
+        {
+            name: "Egypt",
+            clue: "This country is home to ancient pyramids."
+        },
+        {
+            name: "Australia",
+            clue: "This country has kangaroos and the Great Barrier Reef."
+        }
+    ];
+
+    let currentCountry = null;
+
+    function newGame() {
+        const randomIndex = Math.floor(Math.random() * countries.length);
+        currentCountry = countries[randomIndex];
+        document.getElementById("clue").textContent = "Clue: " + currentCountry.clue;
+        document.getElementById("message").textContent = "";
+        document.getElementById("guessInput").value = "";
+    }
+
+    function checkGuess() {
+        const userGuess = document.getElementById("guessInput").value.trim();
+
+        if (!userGuess) {
+            document.getElementById("message").textContent = "❗ Please enter a guess.";
+            return;
+        }
+
+        if (userGuess.toLowerCase() === currentCountry.name.toLowerCase()) {
+            document.getElementById("message").textContent =
+                "✅ Correct! The country is " + currentCountry.name + "!";
+        } else {
+            document.getElementById("message").textContent =
+                "❌ Wrong guess. Try again!";
+        }
+    }
+
+    // Start the game when the page loads
+    newGame();
+</script>
+
+</body>
+</html>

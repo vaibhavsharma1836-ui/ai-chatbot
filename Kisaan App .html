@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Farmer Assist India</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;font-family:Arial;background:#eef6ea}
+header{background:#1e8449;color:#fff;padding:15px;text-align:center}
+section{background:#fff;margin:10px;padding:15px;border-radius:10px}
+h2{color:#1e8449}
+select,input,button{width:95%;padding:10px;margin-top:8px}
+button{background:#1e8449;color:#fff;border:none;border-radius:5px}
+.card{border-bottom:1px solid #ddd;padding:10px 0}
+small{color:#555}
+a{color:#1e8449;font-weight:bold;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌾 Farmer Assist India</h1>
+<select>
+<option>English</option>
+<option>हिंदी</option>
+<option>தமிழ்</option>
+<option>हरयाणवी</option>
+</select>
+</header>
+
+<!-- REQUIREMENT SECTION -->
+<section>
+<h2>⚠️ Requirement (Read First)</h2>
+<p>
+This app uses <b>OpenWeather API</b> for live weather data.
+</p>
+<p>
+👉 Create a <b>FREE API Key</b> from:
+<br>
+<a href="https://openweathermap.org/api" target="_blank">
+https://openweathermap.org/api
+</a>
+</p>
+<p>
+After getting the API key, paste it below.
+</p>
+
+<input id="apiKeyInput" placeholder="Paste your OpenWeather API Key here">
+<button onclick="saveKey()">Save API Key</button>
+<p id="keyStatus"></p>
+</section>
+
+<!-- WEATHER -->
+<section>
+<h2>🌦 Weather & Climate</h2>
+<input id="city" placeholder="Enter City / Village">
+<button onclick="getWeather()">Get Weather</button>
+<button onclick="getLocation()">📍 Use My Location</button>
+<p id="weather"></p>
+</section>
+
+<!-- CROPS -->
+<section>
+<h2>🌱 Crops of India</h2>
+
+<div class="card" onclick="selectCrop('Rice')">
+<b>Rice (धान)</b><br>
+<small>Kharif | Clay Soil | High Water | Urea, DAP</small>
+</div>
+
+<div class="card" onclick="selectCrop('Wheat')">
+<b>Wheat (गेहूं)</b><br>
+<small>Rabi | Loamy Soil | Medium Water | NPK</small>
+</div>
+
+<div class="card" onclick="selectCrop('Maize')">
+<b>Maize (मक्का)</b><br>
+<small>Kharif | Sandy Soil | Medium Water</small>
+</div>
+
+<div class="card" onclick="selectCrop('Cotton')">
+<b>Cotton (कपास)</b><br>
+<small>Kharif | Black Soil | Medium Water</small>
+</div>
+
+<div class="card" onclick="selectCrop('Sugarcane')">
+<b>Sugarcane (गन्ना)</b><br>
+<small>Annual | Loamy Soil | Very High Water</small>
+</div>
+</section>
+
+<!-- PEST -->
+<section>
+<h2>🐛 Pest & Disease</h2>
+<p id="pests">Select a crop to see pest information</p>
+</section>
+
+<!-- MANDI -->
+<section>
+<h2>💰 Mandi Prices (₹ / Quintal)</h2>
+Rice – 2200<br>
+Wheat – 2100<br>
+Maize – 1800<br>
+Cotton – 6200<br>
+Sugarcane – 350
+</section>
+
+<!-- GOVT -->
+<section>
+<h2>🏛 Government Schemes</h2>
+<ul>
+<li>PM-Kisan – ₹6000 per year</li>
+<li>MSP – Minimum Support Price</li>
+<li>PMFBY – Crop Insurance</li>
+<li>Seed & Fertilizer Subsidy</li>
+</ul>
+</section>
+
+<!-- VOICE -->
+<section>
+<h2>🗣 Voice Assistant</h2>
+<button onclick="speak()">Speak Selected Crop Info</button>
+</section>
+
+<script>
+let API_KEY = localStorage.getItem("WEATHER_API_KEY") || "";
+let selectedCrop="Rice";
+
+const pestData={
+Rice:"Stem borer, Brown planthopper",
+Wheat:"Aphids, Rust disease",
+Maize:"Fall armyworm",
+Cotton:"Bollworm, Whitefly",
+Sugarcane:"Top borer, Red rot"
+};
+
+if(API_KEY){
+document.getElementById("keyStatus").innerText="✅ API Key Loaded";
+}
+
+function saveKey(){
+API_KEY=document.getElementById("apiKeyInput").value;
+localStorage.setItem("WEATHER_API_KEY",API_KEY);
+document.getElementById("keyStatus").innerText="✅ API Key Saved Successfully";
+}
+
+function selectCrop(c){
+selectedCrop=c;
+document.getElementById("pests").innerText=pestData[c];
+}
+
+async function getWeather(){
+if(!API_KEY){alert("Please enter API key first");return;}
+let city=document.getElementById("city").value;
+let res=await fetch(
+`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+);
+let w=await res.json();
+document.getElementById("weather").innerHTML=
+`🌡 ${w.main.temp}°C | 💧 ${w.main.humidity}% | ${w.weather[0].description}`;
+}
+
+function getLocation(){
+if(!API_KEY){alert("Please enter API key first");return;}
+navigator.geolocation.getCurrentPosition(async pos=>{
+let r=await fetch(
+`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&units=metric&appid=${API_KEY}`
+);
+let w=await r.json();
+document.getElementById("weather").innerHTML=
+`📍 ${w.name} | 🌡 ${w.main.temp}°C | ${w.weather[0].description}`;
+});
+}
+
+function speak(){
+let msg=new SpeechSynthesisUtterance(
+selectedCrop+" crop information. "+pestData[selectedCrop]
+);
+speechSynthesis.speak(msg);
+}
+</script>
+
+</body>
+</html>
